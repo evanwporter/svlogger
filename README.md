@@ -75,6 +75,9 @@ Five functions are available to print a message by severity level:
 - 🟪 **critical**, printed in pink
 - 🟥 **error**, printed in red
 
+Another function named **msg** is available to print a message without prepended
+severity prefix.
+
 
 If verbosity is 0, no messages are logged. If equal to 1, everything is logged.
 If verbosity=2, only info, warning, critical and errors and so on until 5. All
@@ -106,6 +109,22 @@ This should produce a similar output:
 ```bash
 MyCircuit: ERROR: (@ 406.0ns) Moving in a new state
 ```
+
+By default, the file to log the messages is named with the name attribute passed
+to the constructor. But the filename can be set up with a custom name with a
+task:
+
+```verilog
+    ...
+    initial begin
+        mylog = new("MyFSM", `SVL_VERBOSE_DEBUG, `SVL_ROUTE_ALL);
+        mylog.set_filename("mySuperFSM.txt");
+    end
+    ...
+```
+
+If using Verilator, the first file is suppressed and a new file is created; but with
+Icarus Verilog the first file is kept because the tool limitation to use `$system()`.
 
 ## License
 

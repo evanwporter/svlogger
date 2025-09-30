@@ -68,6 +68,20 @@ class svlogger;
         end
     endfunction
 
+    // Change the filename. If using verilator, the existing file is
+    // deleted, but it can't be done with icarus verilog
+    task set_filename(
+        string  _name
+    );
+        if (this.route==`SVL_ROUTE_FILE || this.route==`SVL_ROUTE_ALL) begin
+            $fclose(f);
+            `ifndef __ICARUS__
+            $system({"rm -f ", {this.name, ".txt"}});
+            `endif
+            this.f = $fopen(_name, "w");
+        end
+    endtask
+
     // Internal function to log into console and/or log file
     // Internal use only
     task _log_text(string text);
