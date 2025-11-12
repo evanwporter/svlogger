@@ -18,6 +18,10 @@
 
 class svlogger;
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // Singleton Instance
+    static svlogger m_inst;
+
     ////////////////////////////////////////////
     // Name of the module printed in the console
     // and/or the log file name
@@ -65,6 +69,17 @@ class svlogger;
         this.route = _route;
         if (this.route==`SVL_ROUTE_FILE || this.route==`SVL_ROUTE_ALL) begin
             this.f = $fopen({this.name, ".txt"},"w");
+        end
+    endfunction
+
+    ////////////////////////////////////////////
+    // Initialize the global instance
+    static function void init(string _name = "svlogger",
+                              int _verbosity = `SVL_VERBOSE_DEBUG,
+                              int _route = `SVL_ROUTE_ALL);
+        if (global_inst == null) begin
+            global_inst = new(_name, _verbosity, _route);
+            global_inst.info($sformatf("Initialized global logger '%s'", _name));
         end
     endfunction
 
@@ -158,6 +173,36 @@ class svlogger;
             _log_text(t_text);
         end
     end
+    endtask
+
+    static task msg(string text);
+        if (global_inst != null) 
+            global_inst.msg(text);
+    endtask
+
+    static task debug(string text);
+        if (global_inst != null) 
+            global_inst.debug(text);
+    endtask
+
+    static task info(string text);
+        if (global_inst != null) 
+            global_inst.info(text);
+    endtask
+
+    static task warning(string text);
+        if (global_inst != null) 
+            global_inst.warning(text);
+    endtask
+
+    static task critical(string text);
+        if (global_inst != null) 
+            global_inst.critical(text);
+    endtask
+
+    static task error(string text);
+        if (global_inst != null) 
+            global_inst.error(text);
     endtask
 
 endclass
